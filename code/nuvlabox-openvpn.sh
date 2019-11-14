@@ -23,6 +23,7 @@ help_info() {
     exit 0
 }
 
+
 if [[ ! -z ${SOME_ARG} ]]
 then
     if [[ "${SOME_ARG}" = "-h" ]] || [[ "${SOME_ARG}" = "--help" ]] || [[ "${SOME_ARG}" = "help" ]]
@@ -36,9 +37,20 @@ fi
 SHARED="/srv/nuvlabox/shared"
 VPN_SYNC="${SHARED}/vpn"
 VPN_IS="${VPN_SYNC}/vpn-is"
+VPN_CONF="${VPN_SYNC}/nuvlabox.conf"
 NUVLABOX_ID=$(echo ${NUVLABOX_UUID} | awk -F'/' '{print $NF}')
 
 mkdir -p ${VPN_SYNC}
+
+write_vpn_conf() {
+
+    cat>${VPN_CONF} <<EOF
+## TODO
+
+EOF
+
+}
+
 
 ##----- FOR NOW, THE NETWORK MANAGER ONLY SETS UP THE VPN CLIENT -----##
 
@@ -54,6 +66,14 @@ do
     openssl req -batch -nodes -newkey ec -pkeyopt ec_paramgen_curve:secp521r1 \
         -keyout ${VPN_SYNC}/nuvlabox-vpn.key -out ${VPN_SYNC}/nuvlabox-vpn.csr \
         -subj "/CN=${NUVLABOX_ID}"
+
+    vpn_credential = $(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
+        -d '''{"vpn-csr": "'''$(cat ${VPN_SYNC}/nuvlabox-vpn.csr | sed ':a;N;$!ba;s/\n/\\n/g')'''"}''')
+
+    vpn_certificate = $(echo ${vpn_credential} | jq '.["vpn-certificate"]')
+    vpn_intermediate_ca = $(echo ${vpn_credential} | jq '.["vpn-intermediate-ca"]')
+
+    write_vpn_conf
 
     # deletes the file so that it wait until there's an update
     rm -f ${VPN_IS}
