@@ -1,6 +1,3 @@
-# network-manager
-
-
 # NuvlaBox Network Manager
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/nuvlabox/network-manager/graphs/commit-activity)
@@ -43,7 +40,7 @@ There is a [POM file](pom.xml) which is responsible for handling the multi-archi
  - *Docker Compose (version 1.23.2 or higher)*
 
 
-### Launching the NuvlaBox Agent
+### Launching the NuvlaBox Network Manager
 
 Simply run `docker-compose up --build`
 
