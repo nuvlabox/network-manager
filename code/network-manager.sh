@@ -87,6 +87,9 @@ remote-cert-tls server
 
 verify-x509-name "${7}" name-prefix
 
+script-security 2
+up /opt/nuvlabox/scripts/get_ip.sh
+
 auth-nocache
 
 ping 60
