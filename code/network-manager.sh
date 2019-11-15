@@ -115,8 +115,14 @@ do
         -keyout ${VPN_SYNC}/nuvlabox-vpn.key -out ${VPN_SYNC}/nuvlabox-vpn.csr \
         -subj "/CN=${NUVLABOX_ID}"
 
+    echo "AAAAAAAAAAA\n"
+
+    cat ${VPN_SYNC}/nuvlabox-vpn.csr
+
+    flatten_csr=$(cat ${VPN_SYNC}/nuvlabox-vpn.csr | sed ':a;N;$!ba;s/\n/\\n/g')
+
     vpn_conf_fields = $(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
-        -d '''{"vpn-csr": "'''$(cat ${VPN_SYNC}/nuvlabox-vpn.csr | sed ':a;N;$!ba;s/\n/\\n/g')'''"}''')
+        -d '''{"vpn-csr": "'''${flatten_csr}'''"}''')
 
     vpn_certificate = $(echo ${vpn_conf_fields} | jq '.["vpn-certificate"]')
     vpn_intermediate_ca = $(echo ${vpn_conf_fields} | jq '.["vpn-intermediate-ca"]')

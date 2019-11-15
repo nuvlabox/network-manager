@@ -14,7 +14,7 @@ LABEL git.build.time=${GIT_BUILD_TIME}
 LABEL travis.build.number=${TRAVIS_BUILD_NUMBER}
 LABEL travis.build.web.url=${TRAVIS_BUILD_WEB_URL}
 
-RUN apk --no-cache add jq=1.6-r0 openssl=1.1.1d-r0
+RUN apk --no-cache add jq=1.6-r0 openssl=1.1.1d-r0 curl=7.64.0-r3
 
 EXPOSE 1194/UDP
 
