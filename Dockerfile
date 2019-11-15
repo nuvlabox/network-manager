@@ -24,7 +24,5 @@ WORKDIR /opt/nuvlabox/
 
 COPY code/ /opt/nuvlabox/
 
-ENTRYPOINT ["/opt/nuvlabox/nuvlabox-openvpn.sh"]
-
-CMD ["--config", "/etc/openvpn/openvpn.conf"]
+ENTRYPOINT ["/opt/nuvlabox/network-manager.sh"]
 
