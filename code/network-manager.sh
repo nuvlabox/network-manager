@@ -106,7 +106,7 @@ EOF
 while true
 do
     echo 'INFO: waiting for the NuvlaBox agent to mandate which VPN Infrastructure to use in '${VPN_IS}
-    until [[ ! -f ${VPN_IS} ]]
+    until [[ -f ${VPN_IS} ]]
     do
         continue
     done
