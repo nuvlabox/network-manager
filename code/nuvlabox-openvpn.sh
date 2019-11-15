@@ -43,9 +43,57 @@ NUVLABOX_ID=$(echo ${NUVLABOX_UUID} | awk -F'/' '{print $NF}')
 mkdir -p ${VPN_SYNC}
 
 write_vpn_conf() {
+#
+#
+#     $1: vpn_ca_certificate
+#     $2: vpn_intermediate_ca_is
+#     $3: vpn_intermediate_ca
+#     $4: vpn_certificate
+#     $5: path to nuvlabox-vpn.key
+#     $6: vpn_shared_key
+#     $7: vpn_common_name_prefix
+#     $8: vpn_endpoints_mapped
 
     cat>${VPN_CONF} <<EOF
-## TODO
+client
+
+dev vpn
+dev-type tun
+
+# Certificate Configuration
+# CA certificate
+<ca>
+${1}
+${2}
+${3}
+</ca>
+
+# Client Certificate
+<cert>
+${4}
+</cert>
+
+# Client Key
+<key>
+$(cat $5)
+</key>
+
+# Shared key
+<tls-crypt>
+${6}
+</tls-crypt>
+
+remote-cert-tls server
+
+verify-x509-name "${7}" name-prefix
+
+auth-nocache
+
+ping 60
+ping-restart 120
+compress lz4
+
+${8}
 
 EOF
 
@@ -67,13 +115,20 @@ do
         -keyout ${VPN_SYNC}/nuvlabox-vpn.key -out ${VPN_SYNC}/nuvlabox-vpn.csr \
         -subj "/CN=${NUVLABOX_ID}"
 
-    vpn_credential = $(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
+    vpn_conf_fields = $(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
         -d '''{"vpn-csr": "'''$(cat ${VPN_SYNC}/nuvlabox-vpn.csr | sed ':a;N;$!ba;s/\n/\\n/g')'''"}''')
 
-    vpn_certificate = $(echo ${vpn_credential} | jq '.["vpn-certificate"]')
-    vpn_intermediate_ca = $(echo ${vpn_credential} | jq '.["vpn-intermediate-ca"]')
+    vpn_certificate = $(echo ${vpn_conf_fields} | jq '.["vpn-certificate"]')
+    vpn_intermediate_ca = $(echo ${vpn_conf_fields} | jq '.["vpn-intermediate-ca"]')
+    vpn_ca_certificate = $(echo ${vpn_conf_fields} | jq '.["vpn-ca-certificate"]')
+    vpn_intermediate_ca_is = $(echo ${vpn_conf_fields} | jq '.["vpn-intermediate-ca-is"]')
+    vpn_shared_key = $(echo ${vpn_conf_fields} | jq '.["vpn-shared-key"]')
+    vpn_common_name_prefix = $(echo ${vpn_conf_fields} | jq '.["vpn-common-name-prefix"]')
+    vpn_endpoints_mapped = $(echo ${vpn_conf_fields} | jq '.["vpn-endpoints-mapped"]')
 
-    write_vpn_conf
+    write_vpn_conf "${vpn_ca_certificate}" "${vpn_intermediate_ca_is}" "${vpn_intermediate_ca}" \
+                    "${vpn_certificate}" "${VPN_SYNC}/nuvlabox-vpn.key" "${vpn_shared_key}" \
+                    "${vpn_common_name_prefix}" "${vpn_endpoints_mapped}"
 
     # deletes the file so that it wait until there's an update
     rm -f ${VPN_IS}

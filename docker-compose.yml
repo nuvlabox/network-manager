@@ -1,0 +1,8 @@
+version: "3.7"
+
+services:
+  network-manager:
+    build: .
+    labels:
+      - nuvlabox.component=True
+      - nuvlabox.deployment=production
