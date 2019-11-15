@@ -5,9 +5,6 @@ header_message="NuvlaBox Network Manager
 This microservice is responsible for setting up the necessary network
 configurations for the NuvlaBox to function properly.
 \n\n
-This includes setting up a VPN client in case the respective NuvlaBox
-resource in Nuvla mandates so.
-\n\n
 Arguments:\n
   No arguments are expected.\n
   This message will be shown whenever -h, --help or help is provided and a

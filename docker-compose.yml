@@ -3,6 +3,8 @@ version: "3.7"
 services:
   network-manager:
     build: .
+    environment:
+      - NUVLABOX_UUID=${NUVLABOX_UUID}
     labels:
       - nuvlabox.component=True
       - nuvlabox.deployment=production
