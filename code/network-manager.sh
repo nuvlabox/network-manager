@@ -115,29 +115,33 @@ do
         -keyout ${VPN_SYNC}/nuvlabox-vpn.key -out ${VPN_SYNC}/nuvlabox-vpn.csr \
         -subj "/CN=${NUVLABOX_ID}"
 
-    echo "AAAAAAAAAAA\n"
-
-    cat ${VPN_SYNC}/nuvlabox-vpn.csr
-
     flatten_csr=$(cat ${VPN_SYNC}/nuvlabox-vpn.csr | sed ':a;N;$!ba;s/\n/\\n/g')
 
-    vpn_conf_fields = $(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
-        -d '''{"vpn-csr": "'''${flatten_csr}'''"}''')
+    vpn_conf_fields=$(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
+        -d "{\"vpn-csr\": \"${flatten_csr}\"}")
 
-    vpn_certificate = $(echo ${vpn_conf_fields} | jq '.["vpn-certificate"]')
-    vpn_intermediate_ca = $(echo ${vpn_conf_fields} | jq '.["vpn-intermediate-ca"]')
-    vpn_ca_certificate = $(echo ${vpn_conf_fields} | jq '.["vpn-ca-certificate"]')
-    vpn_intermediate_ca_is = $(echo ${vpn_conf_fields} | jq '.["vpn-intermediate-ca-is"]')
-    vpn_shared_key = $(echo ${vpn_conf_fields} | jq '.["vpn-shared-key"]')
-    vpn_common_name_prefix = $(echo ${vpn_conf_fields} | jq '.["vpn-common-name-prefix"]')
-    vpn_endpoints_mapped = $(echo ${vpn_conf_fields} | jq '.["vpn-endpoints-mapped"]')
+    echo "${vpn_conf_fields}" | jq -e
 
-    write_vpn_conf "${vpn_ca_certificate}" "${vpn_intermediate_ca_is}" "${vpn_intermediate_ca}" \
-                    "${vpn_certificate}" "${VPN_SYNC}/nuvlabox-vpn.key" "${vpn_shared_key}" \
-                    "${vpn_common_name_prefix}" "${vpn_endpoints_mapped}"
+    if [[ $? -ne 0 ]]
+    then
+        echo "ERR: Cannot commission with VPN credential...check NuvlaBox Agent logs for more info"
+        sleep 20
+    else
+        vpn_certificate=$(echo ${vpn_conf_fields} | jq -r '.["vpn-certificate"]')
+        vpn_intermediate_ca=$(echo ${vpn_conf_fields} | jq -r '.["vpn-intermediate-ca"]')
+        vpn_ca_certificate=$(echo ${vpn_conf_fields} | jq -r '.["vpn-ca-certificate"]')
+        vpn_intermediate_ca_is=$(echo ${vpn_conf_fields} | jq -r '.["vpn-intermediate-ca-is"]')
+        vpn_shared_key=$(echo ${vpn_conf_fields} | jq -r '.["vpn-shared-key"]')
+        vpn_common_name_prefix=$(echo ${vpn_conf_fields} | jq -r '.["vpn-common-name-prefix"]')
+        vpn_endpoints_mapped=$(echo ${vpn_conf_fields} | jq -r '.["vpn-endpoints-mapped"]')
 
-    # deletes the file so that it wait until there's an update
-    rm -f ${VPN_IS}
+        write_vpn_conf "${vpn_ca_certificate}" "${vpn_intermediate_ca_is}" "${vpn_intermediate_ca}" \
+                        "${vpn_certificate}" "${VPN_SYNC}/nuvlabox-vpn.key" "${vpn_shared_key}" \
+                        "${vpn_common_name_prefix}" "${vpn_endpoints_mapped}"
+
+        # deletes the file so that it wait until there's an update
+        rm -f ${VPN_IS}
+    fi
 done
 
 
