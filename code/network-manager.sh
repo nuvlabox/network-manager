@@ -50,11 +50,12 @@ write_vpn_conf() {
 #     $6: vpn_shared_key
 #     $7: vpn_common_name_prefix
 #     $8: vpn_endpoints_mapped
+#     $9: vpn interface name
 
     cat>${VPN_CONF} <<EOF
 client
 
-dev vpn
+dev ${9}
 dev-type tun
 
 # Certificate Configuration
@@ -88,6 +89,7 @@ script-security 2
 up /opt/nuvlabox/scripts/get_ip.sh
 
 auth-nocache
+auth-retry nointeract
 
 ping 60
 ping-restart 120
@@ -110,6 +112,8 @@ do
     do
         continue
     done
+
+    VPN_IFACE_NAME=${VPN_INTERFACE_NAME:-vpn}
 
     openssl req -batch -nodes -newkey ec -pkeyopt ec_paramgen_curve:secp521r1 \
         -keyout ${VPN_SYNC}/nuvlabox-vpn.key -out ${VPN_SYNC}/nuvlabox-vpn.csr \
@@ -137,7 +141,7 @@ do
 
         write_vpn_conf "${vpn_ca_certificate}" "${vpn_intermediate_ca_is}" "${vpn_intermediate_ca}" \
                         "${vpn_certificate}" "${VPN_SYNC}/nuvlabox-vpn.key" "${vpn_shared_key}" \
-                        "${vpn_common_name_prefix}" "${vpn_endpoints_mapped}"
+                        "${vpn_common_name_prefix}" "${vpn_endpoints_mapped}" "${VPN_IFACE_NAME}"
 
         # deletes the file so that it wait until there's an update
         rm -f ${VPN_IS}
