@@ -99,6 +99,7 @@ ${8}
 
 EOF
 
+echo "INFO: Finished writing ${VPN_CONF}"
 }
 
 
