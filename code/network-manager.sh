@@ -111,9 +111,11 @@ do
     echo 'INFO: waiting for the NuvlaBox agent to mandate which VPN Infrastructure to use in '${VPN_IS}
     until [[ -f ${VPN_IS} ]]
     do
-        continue
+        # TODO: replace by inotify
+        sleep 15
     done
 
+    # VPN_INTERFACE_NAME can be passed as a Docker env
     VPN_IFACE_NAME=${VPN_INTERFACE_NAME:-vpn}
 
     openssl req -batch -nodes -newkey ec -pkeyopt ec_paramgen_curve:secp521r1 \
