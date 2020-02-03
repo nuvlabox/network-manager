@@ -1,4 +1,8 @@
 # Changelog
+## [0.0.3] - 2020-02-03
+### Added
+### Changed
+- fixed aggressive wait loop
 ## [0.0.2] - 2019-12-18
 ### Added 
 - configurable VPN interface name via env var 
