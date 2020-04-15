@@ -1,4 +1,8 @@
 # Changelog
+## [0.0.4] - 2020-02-03
+### Added
+### Changed
+- fixed openssl dependency
 ## [0.0.3] - 2020-02-03
 ### Added
 ### Changed
