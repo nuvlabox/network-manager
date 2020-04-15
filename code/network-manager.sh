@@ -124,7 +124,7 @@ do
 
     flatten_csr=$(cat ${VPN_SYNC}/nuvlabox-vpn.csr | sed ':a;N;$!ba;s/\n/\\n/g')
 
-    vpn_conf_fields=$(curl -XPOST -k http://agent:5000/api/commission -H content-type:application/json \
+    vpn_conf_fields=$(curl -XPOST -k http://agent/api/commission -H content-type:application/json \
         -d "{\"vpn-csr\": \"${flatten_csr}\"}")
 
     echo "${vpn_conf_fields}" | jq -e
