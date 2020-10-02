@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.0] - 2020-04-15
+### Added
+### Changed
+- agent API now running at port 80
 ## [0.0.4] - 2020-02-03
 ### Added
 ### Changed
