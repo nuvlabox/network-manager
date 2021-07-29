@@ -6,7 +6,7 @@
 [![CI](https://img.shields.io/travis/com/nuvlabox/network-manager?style=for-the-badge&logo=travis-ci&logoColor=white)](https://travis-ci.com/nuvlabox/network-manager)
 [![GitHub issues](https://img.shields.io/github/issues/nuvlabox/network-manager?style=for-the-badge&logo=github&logoColor=white)](https://GitHub.com/nuvlabox/network-manager/issues/)
 [![Docker pulls](https://img.shields.io/docker/pulls/nuvlabox/network-manager?style=for-the-badge&logo=Docker&logoColor=white)](https://cloud.docker.com/u/nuvlabox/repository/docker/nuvlabox/network-manager)
-[![Docker image size](https://img.shields.io/microbadger/image-size/nuvlabox/network-manager?style=for-the-badge&logo=Docker&logoColor=white)](https://cloud.docker.com/u/nuvlabox/repository/docker/nuvlabox/network-manager)
+[![Docker image size](https://img.shields.io/docker/image-size/nuvladev/network-manager/master?logo=docker&logoColor=white&style=for-the-badge)](https://cloud.docker.com/u/nuvlabox/repository/docker/nuvlabox/network-manager)
 
 
 
